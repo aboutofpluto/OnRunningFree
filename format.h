@@ -20,6 +20,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 // *** Header: Fixed size, 60 bytes.
 
+#ifndef FORMAT_H
+#define FORMAT_H
+
 #pragma pack(1)
 struct SHeader
 {
@@ -139,7 +142,35 @@ struct SDataRecordCurve
 };
 #pragma pack()
 
+struct SOptions
+{
+	u8	nOptions;
+
+	// Zero point data, if provided.
+	struct SDataRecordGPS	sZeroGPS;
+	struct SHalfCurve		sZeroCurve;
+};
+// Awful, global variable
+struct SOptions	gOptions;
 
 
+enum
+{
+	e_OPT_HeaderOnly		= 1,		// Display header only.
+	e_OPT_GPXFile			= 1 << 1,	// Generate GPX file.
+	e_OPT_GPSDataDisplay	= 1 << 2,	// Display GPS data to screen.
+	e_OPT_Elevation			= 1 << 3,	// Retrieve elevation.
+	e_OPT_ZeroPt			= 1 << 4,	// 1 = Zero point information provided.
+	e_OPT_Verbose			= 1 << 5,	// Verbose output
+	
+	e_OPT_DefaultOptions	= (e_OPT_GPSDataDisplay | e_OPT_GPXFile)
+};
 
+enum {
+  NO_ERROR			= 0,
+  COMMANDLINE_ERROR = 1,
+  HEADER_ERROR		= 2,
+  DATA_ERROR		= 3,
+};
 
+#endif

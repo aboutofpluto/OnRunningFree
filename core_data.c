@@ -6,8 +6,11 @@
 
 #include "ctypes.h"
 #include "format.h"
+
+#include "load.h"
+#include "core_header.h"
+#include "point.h"
 #include "elevation.h"
-#include "main.h"
 
 // Free any data allocated in Load_Data
 int Free_All(u8 *pDataBuf, FILE *pGpxFile, double *pElev, char *error) {
@@ -17,9 +20,9 @@ int Free_All(u8 *pDataBuf, FILE *pGpxFile, double *pElev, char *error) {
 
   if (error != NULL) {
 	fprintf(stderr, "%s", error);
-	return -2;
+	return DATA_ERROR;
   }
-  return 0;
+  return NO_ERROR;
 }
 
 int Load_Data(char *pFnData, char *pFnGpx, const struct SHeader *pHeader) {

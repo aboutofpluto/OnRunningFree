@@ -27,43 +27,45 @@
 
 #include "ctypes.h"
 #include "format.h"
-#include "elevation.h"
 #include "main.h"
+#include "load.h"
+#include "core_header.h"
+#include "core_data.h"
 
 // Main program.
-int main(int argc, char **argv)
-{
-  char	*pFilename = NULL;	// ptr on filename in args.
-
-  char pFnHeader[256];	// Header file name.
-  char pFnData[256];		// Data file name.
-  char pFnGpx[256];		// GPX file name (output).
-
-
-  // Tool name.
-  printf("*** OMX2GPX v%d.%02d, Geonaute OnMove 220 OMH/OMD to GPX.\n", VER_MAJOR, VER_MINOR);
-  printf("*** By Clement CORDE - c1702@yahoo.com\n\n");
-  // Reset options.
+int main(int argc, char **argv) {
+  // Reset options. Awful, have to change that
   memset(&gOptions, 0, sizeof(struct SOptions));
   gOptions.nOptions = e_OPT_DefaultOptions;
-  // Do we have arguments?
-  if (argc < 2)
-	{
-	  Help_Display();
-	  exit(1);
-	}
 
-  // Check command line's arguments.
+  // Do we have arguments?
+  if (argc < 2)	{
+	  Help_Display();
+	  return COMMANDLINE_ERROR;
+  }
+
+  char *pFilename = NULL; // ptr on filename in args.
+  // Parse command line's arguments (TODO rename/refactor)
   CommandLine_Check(argc, argv, &pFilename);
 
+  if (gOptions.nOptions & e_OPT_Verbose) {
+    // Tool name.
+	printf("*** OMX2GPX v%d.%02d, Geonaute OnMove 220 OMH/OMD to GPX.\n", VER_MAJOR, VER_MINOR);
+	printf("*** By Clement CORDE - c1702@yahoo.com\n\n");
+  }
+  
   // Do we have a filename?
-  if (pFilename == NULL)
-	{
+  if (pFilename == NULL) {
 	  printf("*** FATAL: No filename given!\n\n");
 	  Help_Display();
-	  exit(1);
-	}
+	  return COMMANDLINE_ERROR;
+  }
+
   // Create filenames.
+  char pFnHeader[256];	// Header file name.
+  char pFnData[256];	// Data file name.
+  char pFnGpx[256];		// GPX file name (output).
+
   strncpy(pFnHeader, pFilename, sizeof(pFnHeader) - 4);
   strncpy(pFnData, pFilename, sizeof(pFnData) - 4);
   strncpy(pFnGpx, pFilename, sizeof(pFnGpx) - 4);
@@ -71,29 +73,29 @@ int main(int argc, char **argv)
   strcat(pFnData, ".OMD");
   strcat(pFnGpx, ".gpx");
 
-  Options_Display();
+  if (gOptions.nOptions & e_OPT_Verbose) {
+	Options_Display();
+  }
 
-  // *** Header ***
   // Load header (OMH).
   struct SHeader	*pHeader;
-  pHeader = Load_Header(pFnHeader, &pHeader);
+  int errorCode = Load_Header(pFnHeader, &pHeader);
 
-  if (pHeader == NULL) {
-	return -1;
+  if (errorCode != 0) {
+	return errorCode;
   }
-	
-  // *** Data ***
+
+  // Option header only
+  if (gOptions.nOptions & e_OPT_HeaderOnly)
+	return NO_ERROR;
+
+  // Means no GPS in data?
   if (pHeader->nGPSOff != 0) {
 	free(pHeader);
-	return 0;
+	return NO_ERROR;
   }
 
   // Load data file (OMD).
   printf("*** GPS data ***\n");
-  Load_Data(pFnData, pFnGpx, &pHeader);
-
-  return 0;
+  return Load_Data(pFnData, pFnGpx, pHeader);
 }
-
-
-

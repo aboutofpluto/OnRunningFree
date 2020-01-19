@@ -6,8 +6,18 @@
 
 #include "ctypes.h"
 #include "format.h"
+#include "load.h"
 #include "elevation.h"
-#include "main.h"
+
+int On_Load_Header_Done(u8 *pHeaderBuf, char *error) {
+  if (pHeaderBuf != NULL) free(pHeaderBuf);
+
+  if (error != NULL) {
+	fprintf(stderr, "%s", error);
+	return HEADER_ERROR;
+  }
+  return NO_ERROR;
+}
 
 int Load_Header(char *pFnHeader, struct SHeader **ppHeader) {
   u32	nHeaderSz;
@@ -17,8 +27,7 @@ int Load_Header(char *pFnHeader, struct SHeader **ppHeader) {
   // Check: Header size ok?
   if (nHeaderSz != sizeof(struct SHeader))
 	{
-	  fprintf(stderr, "OMH: Error! Incorrect header size.\n");
-	  return -3;
+	  return On_Load_Header_Done(pHeaderBuf, "OMH: Error! Incorrect header size.\n");
 	}
 
   struct SHeader *pHeader = *ppHeader = (struct SHeader *)pHeaderBuf;
@@ -26,11 +35,9 @@ int Load_Header(char *pFnHeader, struct SHeader **ppHeader) {
   // Check: File numbers & magic numbers ok?
   if (!(pHeader->nFileNumber0 == pHeader->nFileNumber1 && 
 		pHeader->nFileNumber1 == pHeader->nFileNumber2 &&
-		pHeader->nMagicNumber1 == 0xFA && pHeader->nMagicNumber2 == 0xF0))
-	{
-	  fprintf(stderr, "OMH: Wrong header!\n");
-	  return -3;
-	}
+		pHeader->nMagicNumber1 == 0xFA && pHeader->nMagicNumber2 == 0xF0)) {
+	return On_Load_Header_Done(pHeaderBuf, "OMH: Wrong header!\n");
+  }
 
   printf("*** Session statistics ***\n");
   printf("Session: %02d/%02d/20%02d - %02d:%02d\n", pHeader->nDay, pHeader->nMonth, pHeader->nYear, pHeader->nHours, pHeader->nMinutes);
@@ -99,9 +106,7 @@ int Load_Header(char *pFnHeader, struct SHeader **ppHeader) {
 	  printf("\n");
 	}
 
-  //	if (gOptions.nOptions & e_OPT_HeaderOnly) return NULL;
-
-  return 0;
+  return On_Load_Header_Done(pHeaderBuf, NULL);
 }
 
 time_t Get_TimeStamp(const struct SHeader *pHeader) {

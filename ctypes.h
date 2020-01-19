@@ -17,6 +17,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 ---------- ---------- ---------- ---------- ---------- ---------- ---------- */
 
+#ifndef CTYPES_H
+#define CTYPES_H
 
 typedef uint8_t u8;
 typedef uint16_t u16;
@@ -35,3 +37,5 @@ typedef uint32_t u64;
 typedef int32_t s64;
 #endif
 
+
+#endif

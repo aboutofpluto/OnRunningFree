@@ -3,6 +3,11 @@
 
 #ifdef ELEVATION
 
+#include "ctypes.h"
+#include "format.h"
+int ApiRequest(char *pLocations, double *pElev, u32 nExpectedPoints);
+void AltitudeGet(struct SDataRecordType *pData, u32 nDataSz, double *pElev);
+  
 #define	GOOGLE_MAPS_API_KEY	"***************************************"		// *YOUR* API key.
 #define	GOOGLE_MAPS_API_SZ_MAX	(2048)	// Possibly 8192? (Google API limit).
 
