@@ -33,17 +33,11 @@
 // Main program.
 int main(int argc, char **argv)
 {
-  u8	*pHeaderBuf = NULL;
-  u8	*pDataBuf = NULL;
-  u32	nDataSz;
-  double	*pElev = NULL;
-  FILE	*pGpxFile = NULL;
-
   char	*pFilename = NULL;	// ptr on filename in args.
 
   char pFnHeader[256];	// Header file name.
   char pFnData[256];		// Data file name.
-
+  char pFnGpx[256];		// GPX file name (output).
 
 
   // Tool name.
@@ -82,34 +76,23 @@ int main(int argc, char **argv)
   // *** Header ***
   // Load header (OMH).
   struct SHeader	*pHeader;
-  pHeader = Load_Header(pFnHeader, &pHeaderBuf);
+  pHeader = Load_Header(pFnHeader);
 
   if (pHeader == NULL) {
-	goto _err0;
+	return -1;
   }
 	
   // *** Data ***
   if (pHeader->nGPSOff != 0) {
-	goto _err0;
+	free(pHeader);
+	return 0;
   }
 
   // Load data file (OMD).
   printf("*** GPS data ***\n");
-  Load_Data(pFnData, &pDataBuf, pHeader);
-  
-  
+  Load_Data(pFnData, pFnGpx, pHeader);
 
-
-  // Leaving.
- _err0:
-  if (pHeaderBuf != NULL) free(pHeaderBuf);
-  if (pDataBuf != NULL) free(pDataBuf);
-#ifdef ELEVATION
-  if (pElev != NULL) free(pElev);
-#endif
-  if (pGpxFile != NULL) fclose(pGpxFile);
-  return (0);
-  
+  return 0;
 }
 
 

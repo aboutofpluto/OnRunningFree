@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "ctypes.h"
 
-void onError(FILE *pFile, u8 **ppBuf) {
+void onLoadError(FILE *pFile, u8 **ppBuf) {
   if (pFile != NULL) fclose(pFile);
   if (*ppBuf != NULL) free(*ppBuf);
 }
@@ -19,7 +19,7 @@ void FileLoad(char *pFilename, u8 **ppBuf, u32 *pnSz)
 	pFile = fopen(pFilename, "rb");
 	if (pFile == NULL) {
 		fprintf(stderr, "FileLoad(): Error opening file '%s'.\n", pFilename);
-		onError(pFile, ppBuf);
+		onLoadError(pFile, ppBuf);
 		return;
 	}
 	// Retrieve file size.
@@ -30,7 +30,7 @@ void FileLoad(char *pFilename, u8 **ppBuf, u32 *pnSz)
 	if ((*ppBuf = (u8 *)malloc(*pnSz)) == NULL)
 	{
 		fprintf(stderr, "FileLoad(): Error allocating memory.\n");
-		onError(pFile, ppBuf);
+		onLoadError(pFile, ppBuf);
 		return;
 	}
 	// Loading.
@@ -41,7 +41,7 @@ void FileLoad(char *pFilename, u8 **ppBuf, u32 *pnSz)
 	if (nSz != *pnSz)
 	{
 		fprintf(stderr, "FileLoad(): Read error! %d bytes expected, %d bytes read.\n", *pnSz, nSz);
-		onError(pFile, ppBuf);
+		onLoadError(pFile, ppBuf);
 		return;
 	}
 
