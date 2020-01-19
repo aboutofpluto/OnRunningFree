@@ -58,9 +58,9 @@ def export_btn_handler():
         output = []
         for index in l.curselection():
             output.append(
-                omx2gpx.pywrap(
-                    os.path.join(input_dir, l.get(index).split()[0]),
-                    output_dir)
+                omx2gpx.pywrap(l.get(index).split()[0],
+                               input_dir + "/",
+                               output_dir + "/")
             )
 
         print("\n".join(output))
