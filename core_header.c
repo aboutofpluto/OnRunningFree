@@ -103,3 +103,18 @@ struct SHeader *Load_Header(char *pFnHeader, u8 **pHeaderBuf)
 
 	return pHeader;
 }
+
+time_t Get_TimeStamp(const struct SHeader *pHeader)
+{
+	struct tm sTime;
+
+	memset(&sTime, 0, sizeof(struct tm));
+	sTime.tm_min = pHeader->nMinutes;
+	sTime.tm_hour = pHeader->nHours;
+	sTime.tm_mday = pHeader->nDay;
+	sTime.tm_mon = pHeader->nMonth - 1;		// (range: 0 to 11).
+	sTime.tm_year = (2000 + pHeader->nYear) - 1900;
+	sTime.tm_isdst = -1;
+
+	return mktime(&sTime);
+}
