@@ -6,8 +6,11 @@
 #    Jan 19, 2020 09:07:11 PM CET  platform: Linux
 
 import sys, os
+# python/c wrapper (swig)
 import omx2gpx
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, PhotoImage
+# base64 encoded images
+from images import OUT_OF_JAIL
 
 try:
     import Tkinter as tk
@@ -21,13 +24,22 @@ except ImportError:
     import tkinter.ttk as ttk
     py3 = True
 
+# read headers and display data
 def get_omx_infos_in_dir(directory):
     infos = []
     for f in os.listdir(directory):
         if f.endswith(".py"):
             infos.append(f)
     return infos
-    
+
+# handler for 'Export to GPX' button
+# 1. check if input dir is selected
+# 2. check if output dir are selected
+# 3. check if at least of OMx record is selected
+# If one of these condition is False, nothing more happens
+# Else
+# Use omx2gpx to convert each record to GPX and output on stdout
+# TODO: get outputs in the app, with stats about exportation
 def export_btn_handler():    
     input_dir = w.InputDirEntry.get()
     output_dir = w.OutputDirEntry.get()
@@ -49,7 +61,10 @@ def export_btn_handler():
             )
 
         print("\n".join(output))
-            
+
+# handler for 'Select input directory' button
+# 1. Open directory
+# 2. Look for OMD/OMH files
 def input_btn_handler():
     d = filedialog.askdirectory()
 
@@ -69,6 +84,7 @@ def input_btn_handler():
 
     e.configure(state='readonly')
     
+# handler for 'Select output directory' button
 def output_btn_handler():
     d = filedialog.askdirectory()
     e = w.OutputDirEntry
@@ -86,6 +102,11 @@ def init(top, gui, *args, **kwargs):
     top_level = top
     root = top
 
+    render = PhotoImage(data=OUT_OF_JAIL)
+    label = w.Label3
+    label.configure(image=render)
+    label.image = render
+    
 def destroy_window():
     # Function which closes the window.
     global top_level
