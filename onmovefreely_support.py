@@ -5,7 +5,7 @@
 #  in conjunction with Tcl version 8.6
 #    Jan 19, 2020 09:07:11 PM CET  platform: Linux
 
-import sys, os
+import sys, os, glob
 # python/c wrapper (swig)
 import omx2gpx
 from tkinter import filedialog, messagebox, PhotoImage
@@ -27,9 +27,10 @@ except ImportError:
 # read headers and display data
 def get_omx_infos_in_dir(directory):
     infos = []
-    for f in os.listdir(directory):
-        if f.endswith(".py"):
-            infos.append(f)
+    for f in glob.glob(os.path.join(directory, "*.OMH")):
+        recordname = f.replace(".OMH", "")
+        if os.path.exists(recordname + ".OMD"):
+            infos.append(os.path.basename(recordname))
     return infos
 
 # handler for 'Export to GPX' button

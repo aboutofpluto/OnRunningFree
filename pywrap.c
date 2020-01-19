@@ -18,11 +18,11 @@ int wrap(char *pFilename, char *pOutputDir) {
   char pFnData[256];	// Data file name.
   char pFnGpx[256];		// GPX file name (output).
 
-  strncpy(pFnHeader, pFilename, sizeof(pFnHeader) - 4);
-  strncpy(pFnData, pFilename, sizeof(pFnData) - 4);
+  strcpy(pFnHeader, pFilename);
+  strcpy(pFnData, pFilename)
 
   strcpy(pFnGpx, pOutputDir);
-  strcat(pFnGpx, pFnData);
+  strcat(pFnGpx, pFilename);
 
   strcat(pFnHeader, ".OMH");
   strcat(pFnData, ".OMD");
