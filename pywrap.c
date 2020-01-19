@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #include "ctypes.h"
 #include "format.h"
@@ -61,10 +62,14 @@ char *pywrap(char *filename) {
   close(out_pipe[1]);
   
   wrap(filename, "/tmp/");
-
   fflush(stdout);
-  if (read(out_pipe[0], buffer, MAX_LEN) == 0) {
-	printf("No output from omx2gpx");
+
+  // Non-blocking fd
+  int flags = fcntl(out_pipe[0], F_GETFL, 0);
+  fcntl(out_pipe[0], F_SETFL, flags | O_NONBLOCK);
+  
+  if (read(out_pipe[0], buffer, MAX_LEN) < 3) {
+	strcpy(buffer, "No output from omx2gpx");
   }
 
   dup2(saved_stdout, STDOUT_FILENO);
