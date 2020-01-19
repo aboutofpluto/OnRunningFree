@@ -1,1 +1,1 @@
-char *pywrap(char *filename);
+char *pywrap(char *filename, char *outputdir);

@@ -45,7 +45,7 @@ int wrap(char *pFilename, char *pOutputDir) {
   return Load_Data(pFnData, pFnGpx, pHeader);
 }
 
-char *pywrap(char *filename) {
+char *pywrap(char *filename, char *outputdir) {
   int out_pipe[2];
   int saved_stdout;
   
@@ -61,7 +61,7 @@ char *pywrap(char *filename) {
   dup2(out_pipe[1], STDOUT_FILENO);
   close(out_pipe[1]);
   
-  wrap(filename, "/tmp/");
+  wrap(filename, outputdir);
   fflush(stdout);
 
   // Non-blocking fd
