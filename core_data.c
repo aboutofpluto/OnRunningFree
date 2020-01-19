@@ -9,24 +9,30 @@
 #include "elevation.h"
 #include "main.h"
 
-void Free_All(u8 *pDataBuf, FILE *pGpxFile, double *pElev) {
+// Free any data allocated in Load_Data
+int Free_All(u8 *pDataBuf, FILE *pGpxFile, double *pElev, char *error) {
   if (pGpxFile != NULL) fclose(pGpxFile);
   if (pDataBuf != NULL) free(pDataBuf);
   if (pElev != NULL) free(pElev);
+
+  if (error != NULL) {
+	fprintf(stderr, "%s", error);
+	return -2;
+  }
+  return 0;
 }
 
-void Load_Data(char *pFnData, char *pFnGpx, const struct SHeader *pHeader) {
-  u8	*pDataBuf = NULL;
-  FILE	*pGpxFile = NULL;
-  u32		nDataSz;
+int Load_Data(char *pFnData, char *pFnGpx, const struct SHeader *pHeader) {
+  u8		*pDataBuf = NULL;
+  FILE		*pGpxFile = NULL;
   double	*pElev = NULL;
+  u32		nDataSz;
+
   time_t	nTimeStamp = Get_TimeStamp(pHeader);
 
-  
   if (nTimeStamp == -1) {
-	fprintf(stderr, "mktime() error.\n");
-	Free_All(pDataBuf, pGpxFile, pElev);
-	return;
+	return Free_All(pDataBuf, pGpxFile, pElev,
+					"mktime() error.\n");
   }
 
   FileLoad(pFnData, &pDataBuf, &nDataSz);
@@ -34,9 +40,8 @@ void Load_Data(char *pFnData, char *pFnGpx, const struct SHeader *pHeader) {
   // Check: Data size ok?
   if ( ((nDataSz / sizeof(struct SDataRecordType)) * sizeof(struct SDataRecordType)) != nDataSz)
 	{
-	  fprintf(stderr, "OMD: Error! Incorrect data size.\n");
-	  Free_All(pDataBuf, pGpxFile, pElev);
-	  return;
+	  return Free_All(pDataBuf, pGpxFile, pElev,
+					  "OMD: Error! Incorrect data size.\n");
 	}
   u32	nTotalBlks = nDataSz / sizeof(struct SDataRecordType);
 	  
@@ -61,9 +66,9 @@ void Load_Data(char *pFnData, char *pFnGpx, const struct SHeader *pHeader) {
 	}
   if (nGPSPtNo != pHeader->nGPSPoints)
 	{
-	  fprintf(stderr, "OMD: Error! Incorrect GPS points number. Found:%d, expected:%d.\n", nGPSPtNo, pHeader->nGPSPoints);
-	  Free_All(pDataBuf, pGpxFile, pElev);
-	  return;
+	  // sprintf(stderr, "OMD: Error! Incorrect GPS points number. Found:%d, expected:%d.\n", nGPSPtNo, pHeader->nGPSPoints);
+	  return Free_All(pDataBuf, pGpxFile, pElev,
+					  "OMD: Error! Incorrect GPS points number.\n");
 	}
 
   // GPX stuff.
@@ -72,9 +77,9 @@ void Load_Data(char *pFnData, char *pFnGpx, const struct SHeader *pHeader) {
 	  // Open output file.
 	  if ((pGpxFile = fopen(pFnGpx, "w")) == NULL)
 		{
-		  fprintf(stderr, "GPX: Error creating '%s'. Aborted.\n", pFnGpx);
-		  Free_All(pDataBuf, pGpxFile, pElev);
-		  return;
+		  //		  fprintf(stderr, "GPX: Error creating '%s'. Aborted.\n", pFnGpx);
+		  return Free_All(pDataBuf, pGpxFile, pElev,
+						  "GPX: Error creating file. Aborted.\n");
 		}
 	  // GPX header.
 	  fprintf(pGpxFile, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -90,9 +95,8 @@ void Load_Data(char *pFnData, char *pFnGpx, const struct SHeader *pHeader) {
 	  // Memory allocation for elevations. (+1 for possible zero point, though there should be more than enough blocks with the F2 records).
 	  if ((pElev = (double *)malloc((nTotalBlks + 1) * sizeof(double))) == NULL)
 		{
-		  fprintf(stderr, "Elevation: Error allocating memory.\n");
-		  Free_All(pDataBuf, pGpxFile, pElev);
-		  return;
+		  return Free_All(pDataBuf, pGpxFile, pElev,
+						  "Elevation: Error allocating memory.\n");
 		}
 	  // Clear array.
 	  u32	i;
@@ -134,10 +138,9 @@ void Load_Data(char *pFnData, char *pFnGpx, const struct SHeader *pHeader) {
 			}
 		  else
 			{
-			  fprintf(stderr, "OMD_GPS_RECORD: Unexpected block order! Aborted.\n");
-			  fprintf(stderr, "\t(debug: r=%d g=%d c=%d)\n", nAbsRecNo, nSeqGPS, nSeqCurve);
-			  Free_All(pDataBuf, pGpxFile, pElev);
-			  return;
+			  // fprintf(stderr, "\t(debug: r=%d g=%d c=%d)\n", nAbsRecNo, nSeqGPS, nSeqCurve);
+			  return Free_All(pDataBuf, pGpxFile, pElev,
+							  "OMD_GPS_RECORD: Unexpected block order! Aborted.\n");
 			}
 		  nSeqGPS++;
 		  break;
@@ -149,10 +152,9 @@ void Load_Data(char *pFnData, char *pFnGpx, const struct SHeader *pHeader) {
 			}
 		  else
 			{
-			  fprintf(stderr, "OMD_CURVE_RECORD: Unexpected block order! Aborted.\n");
-			  fprintf(stderr, "\t(debug: r=%d g=%d c=%d)\n", nAbsRecNo, nSeqGPS, nSeqCurve);
-			  Free_All(pDataBuf, pGpxFile, pElev);
-			  return;
+			  // fprintf(stderr, "\t(debug: r=%d g=%d c=%d)\n", nAbsRecNo, nSeqGPS, nSeqCurve);
+			  return Free_All(pDataBuf, pGpxFile, pElev,
+							  "OMD_CURVE_RECORD: Unexpected block order! Aborted.\n");
 			}
 		  nSeqCurve++;
 		  break;
@@ -170,11 +172,10 @@ void Load_Data(char *pFnData, char *pFnGpx, const struct SHeader *pHeader) {
 		{
 		  if (pSeqGPS0 == NULL || pSeqCurve == NULL)
 			{
-			  fprintf(stderr, "Shit happened...\n");
-			  Free_All(pDataBuf, pGpxFile, pElev);
-			  return;
+			  return Free_All(pDataBuf, pGpxFile, pElev,
+							  "Shit happened...\n");
 			}
-
+		  
 		  // Point 0.
 		  Point_Display(nGPSPtNo, nTimeStamp, pSeqGPS0, &pSeqCurve->sHalf0, pElev + nGPSPtNo, pGpxFile);
 		  nGPSPtNo++;
@@ -192,7 +193,7 @@ void Load_Data(char *pFnData, char *pFnGpx, const struct SHeader *pHeader) {
 		  nSeqGPS = 0;
 		  nSeqCurve = 0;
 		}
-
+	  
 	}
 
   // GPX stuff.
@@ -202,7 +203,6 @@ void Load_Data(char *pFnData, char *pFnGpx, const struct SHeader *pHeader) {
 	  fprintf(pGpxFile, "\t\t</trkseg>\n\t</trk>\n</gpx>\n");
 	  printf("\n'%s' generated.\n", pFnGpx);
 	}
-
-  Free_All(pDataBuf, pGpxFile, pElev);
-  return;
+  
+  return Free_All(pDataBuf, pGpxFile, pElev, NULL);
 }

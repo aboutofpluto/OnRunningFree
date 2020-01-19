@@ -9,27 +9,27 @@
 #include "elevation.h"
 #include "main.h"
 
-struct SHeader *Load_Header(char *pFnHeader) {
-  u32 nHeaderSz;
+int Load_Header(char *pFnHeader, struct SHeader **ppHeader) {
+  u32	nHeaderSz;
   u8	*pHeaderBuf = NULL;
-  
+
   FileLoad(pFnHeader, &pHeaderBuf, &nHeaderSz);
   // Check: Header size ok?
   if (nHeaderSz != sizeof(struct SHeader))
 	{
 	  fprintf(stderr, "OMH: Error! Incorrect header size.\n");
-	  return NULL;
+	  return -3;
 	}
 
-  struct SHeader	*pHeader = (struct SHeader *)pHeaderBuf;
-
+  struct SHeader *pHeader = *ppHeader = (struct SHeader *)pHeaderBuf;
+  
   // Check: File numbers & magic numbers ok?
   if (!(pHeader->nFileNumber0 == pHeader->nFileNumber1 && 
 		pHeader->nFileNumber1 == pHeader->nFileNumber2 &&
 		pHeader->nMagicNumber1 == 0xFA && pHeader->nMagicNumber2 == 0xF0))
 	{
 	  fprintf(stderr, "OMH: Wrong header!\n");
-	  return NULL;
+	  return -3;
 	}
 
   printf("*** Session statistics ***\n");
@@ -101,7 +101,7 @@ struct SHeader *Load_Header(char *pFnHeader) {
 
   //	if (gOptions.nOptions & e_OPT_HeaderOnly) return NULL;
 
-  return pHeader;
+  return 0;
 }
 
 time_t Get_TimeStamp(const struct SHeader *pHeader) {

@@ -38,10 +38,11 @@ void Help_Display(void);
 // Command line arguments check.
 void CommandLine_Check(int nArgc, char **ppArgv, char **ppFilename);
 
-struct SHeader *Load_Header(char *pFnHeader);
+int Load_Header(char *pFnHeader, struct SHeader **pHeader);
+
 time_t Get_TimeStamp(const struct SHeader *pHeader);
 
-void Load_Data(char *pFnData, char *pFnGpx, const struct SHeader *pHeader);
+int Load_Data(char *pFnData, char *pFnGpx, const struct SHeader *pHeader);
 
 // Display GPS point info.
 void Point_Display(u32 nGPSPtNo, time_t nTimeStamp, struct SDataRecordGPS *pGPS, struct SHalfCurve *pCurve, double *pElev, FILE *pGpxFile);

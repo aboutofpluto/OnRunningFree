@@ -76,7 +76,7 @@ int main(int argc, char **argv)
   // *** Header ***
   // Load header (OMH).
   struct SHeader	*pHeader;
-  pHeader = Load_Header(pFnHeader);
+  pHeader = Load_Header(pFnHeader, &pHeader);
 
   if (pHeader == NULL) {
 	return -1;
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
 
   // Load data file (OMD).
   printf("*** GPS data ***\n");
-  Load_Data(pFnData, pFnGpx, pHeader);
+  Load_Data(pFnData, pFnGpx, &pHeader);
 
   return 0;
 }
