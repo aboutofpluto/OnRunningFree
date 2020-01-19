@@ -1,7 +1,7 @@
 # Makefile
 
 TARGET = omx2gpx
-OBJECTS = main.o 
+OBJECTS = main.o commandline.o load.o point.o elevation.o core_header.o
 
 CFLAGS = -O3 -Wall -L/usr/lib -L. -s -DNDEBUG 
 LIBS = 
