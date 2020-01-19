@@ -30,7 +30,9 @@ def get_omx_infos_in_dir(directory):
     for f in glob.glob(os.path.join(directory, "*.OMH")):
         recordname = f.replace(".OMH", "")
         if os.path.exists(recordname + ".OMD"):
-            infos.append(os.path.basename(recordname))
+            infos.append("{} - {}".format(
+                os.path.basename(recordname),
+                omx2gpx.timestamp(recordname)))
     return infos
 
 # handler for 'Export to GPX' button
@@ -57,7 +59,7 @@ def export_btn_handler():
         for index in l.curselection():
             output.append(
                 omx2gpx.pywrap(
-                    os.path.join(input_dir, l.get(index)),
+                    os.path.join(input_dir, l.get(index).split()[0]),
                     output_dir)
             )
 

@@ -13,14 +13,16 @@
 #define MAX_LEN 400
 char buffer[MAX_LEN+1] = {0};
 
-int wrap(char *pFilename, char *pOutputDir) {
+int wrap(char *pFilename, char *pInputDir, char *pOutputDir) {
   char pFnHeader[256];	// Header file name.
   char pFnData[256];	// Data file name.
   char pFnGpx[256];		// GPX file name (output).
 
-  strcpy(pFnHeader, pFilename);
-  strcpy(pFnData, pFilename)
+  strcpy(pFnHeader, pInputDir);
+  strcat(pFnHeader, pFilename);
 
+  strcpy(pFnData, pFnHeader);
+  
   strcpy(pFnGpx, pOutputDir);
   strcat(pFnGpx, pFilename);
 
@@ -37,21 +39,49 @@ int wrap(char *pFilename, char *pOutputDir) {
 
   // Means no GPS in data?
   if (pHeader->nGPSOff != 0) {
+	printf("GPSOff\n");
 	free(pHeader);
 	return NO_ERROR;
   }
 
   // Load data file (OMD).
+  printf("Load data\n");
   return Load_Data(pFnData, pFnGpx, pHeader);
 }
 
-char *pywrap(char *filename, char *outputdir) {
+char *timestamp(char *filename) {
+  char pFnHeader[256];	// Header file name.
+
+  strcpy(pFnHeader, filename);
+  strcat(pFnHeader, ".OMH");
+
+  struct SHeader	*pHeader;
+  int errorCode = Load_Header(pFnHeader, &pHeader);
+
+  if (errorCode == NO_ERROR) {
+	u32	nHours, nMins, nSecs;
+	nHours = pHeader->nTime / 3600;
+	nMins = (pHeader->nTime / 60) % 60;
+	nSecs = pHeader->nTime % 60;
+	
+	sprintf(buffer,
+			"%02d-%02d-%04d %02d:%02d (%02d:%02d'%02d\" %.02f km)",
+			pHeader->nDay, pHeader->nMonth, (2000 + pHeader->nYear),
+			pHeader->nHours, pHeader->nMinutes,
+			nHours, nMins, nSecs,
+			(double)pHeader->nDistance / 1000);
+  } else {
+	strcpy(buffer, "Invalid data in header");
+  }
+  return buffer;
+}
+
+char *pywrap(char *filename, char *inputdir, char *outputdir) {
   int out_pipe[2];
   int saved_stdout;
-  
-  char **argv = malloc(sizeof(char *) * 2);
-  argv[0] = "py_wrapper";
-  argv[1] = filename;
+
+  memset(&gOptions, 0, sizeof(struct SOptions));
+  gOptions.nOptions = e_OPT_DefaultOptions;
 
   saved_stdout = dup(STDOUT_FILENO);
   if( pipe(out_pipe) != 0 ) {
@@ -61,7 +91,7 @@ char *pywrap(char *filename, char *outputdir) {
   dup2(out_pipe[1], STDOUT_FILENO);
   close(out_pipe[1]);
   
-  wrap(filename, outputdir);
+  wrap(filename, inputdir, outputdir);
   fflush(stdout);
 
   // Non-blocking fd

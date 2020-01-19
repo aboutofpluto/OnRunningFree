@@ -23,14 +23,14 @@ int Load_Header(char *pFnHeader, struct SHeader **ppHeader) {
   u32	nHeaderSz;
   u8	*pHeaderBuf = NULL;
 
-  FileLoad(pFnHeader, &pHeaderBuf, &nHeaderSz);
+  FileLoad(pFnHeader, (u8 **)ppHeader, &nHeaderSz);
   // Check: Header size ok?
   if (nHeaderSz != sizeof(struct SHeader))
 	{
 	  return On_Load_Header_Done(pHeaderBuf, "OMH: Error! Incorrect header size.\n");
 	}
 
-  struct SHeader *pHeader = *ppHeader = (struct SHeader *)pHeaderBuf;
+  struct SHeader *pHeader = *ppHeader;
   
   // Check: File numbers & magic numbers ok?
   if (!(pHeader->nFileNumber0 == pHeader->nFileNumber1 && 
