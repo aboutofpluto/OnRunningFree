@@ -1,6 +1,6 @@
 # Makefile
 
-TARGET = omx2gpx
+CMD = omx2gpx
 OBJECTS = main.o commandline.o load.o point.o elevation.o core_header.o core_data.o pywrap.o
 
 CFLAGS = -O3 -Wall -L/usr/lib -L. -s -DNDEBUG 
@@ -11,29 +11,33 @@ LINKER = gcc
 PYTHON = python3
 
 SWIG = swig
-SWIG_C = _omx2gpx.c
-SWIG_OUT = $(SWIG_C) omx2gpx.py
+SWIG_C = _$(CMD).c
+SWIG_I = $(CMD).i
+SWIG_OUT = $(SWIG_C)* $(CMD).py
 
 INSTALLER = pyinstaller
-INSTALLER_OUT = build dist onmovefreely.spec
+GUI = onmovefreely
+INSTALLER_OUT = build $(GUI).spec
 
-$(TARGET): $(OBJECTS)
+$(CMD): $(OBJECTS)
 	$(LINKER) $(CFLAGS) -o $@ $^ $(LIBS) 
 
-all: $(TARGET) gui
+$(GUI): py_module
+	$(INSTALLER) -F $(GUI).py
+
+all: $(CMD) $(GUI)
 
 .cc.o:
 	$(CC) $(CFLAGS) -o $< 
 
+py_module:
+	$(SWIG) -python -o $(SWIG_C) $(SWIG_I)
+	$(PYTHON) setup.py build_ext --inplace
+
 clean:
-	rm -f $(TARGET)
+	rm -f $(CMD)
 	rm -f $(OBJECTS) 
 	rm -f $(SWIG_OUT)
 	rm -rf $(INSTALLER_OUT)
+	rm -rf __pycache__/
 
-py_module:
-	$(SWIG) -python -o $(SWIG_C) omx2gpx.i
-	$(PYTHON) setup.py build_ext --inplace
-
-gui: py_module
-	$(INSTALLER) -F onmovefreely.py
