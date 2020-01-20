@@ -45,10 +45,9 @@ GUI:
 
 ## Further references
 
-[Original c code](https://sourceforge.net/projects/omx2gpx/)
-[OMD/OMH specifications](https://github.com/ylecuyer/OnMove200)
-
-[SWIG documentation](http://www.swig.org/Doc4.0/Python.html)
-[PyInstaller documentation](https://pyinstaller.readthedocs.io)
-[FreeDesktop specifications](https://specifications.freedesktop.org/desktop-entry-spec/latest/index.html)
-[Running Free - Iron Maiden](https://www.youtube.com/watch?v=80Hyz4pOXtE)
+- [Original c code](https://sourceforge.net/projects/omx2gpx/)
+- [OMD/OMH specifications](https://github.com/ylecuyer/OnMove200)
+- [SWIG documentation](http://www.swig.org/Doc4.0/Python.html)
+- [PyInstaller documentation](https://pyinstaller.readthedocs.io)
+- [FreeDesktop specifications](https://specifications.freedesktop.org/desktop-entry-spec/latest/index.html)
+- [Running Free - Iron Maiden](https://www.youtube.com/watch?v=80Hyz4pOXtE)
