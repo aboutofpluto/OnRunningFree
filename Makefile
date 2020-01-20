@@ -8,6 +8,14 @@ LIBS =
 
 CC = gcc
 LINKER = gcc
+PYTHON = python3
+
+SWIG = swig
+SWIG_C = _omx2gpx.c
+SWIG_OUT = $(SWIG_C) omx2gpx.py
+
+INSTALLER = pyinstaller
+INSTALLER_OUT = build dist onmovefreely.spec
 
 all: $(TARGET)
 
@@ -18,8 +26,13 @@ $(TARGET): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $< 
 
 clean:
-	rm $(OBJECTS)
+	rm -f $(OBJECTS)
+	rm -f $(SWIG_OUT)
+	rm -rf $(INSTALLER_OUT)
 
-py:
-	swig -python -o _omx2gpx.c omx2gpx.i
-	python setup.py build_ext --inplace
+py_module:
+	$(SWIG) -python -o $(SWIG_C) omx2gpx.i
+	$(PYTHON) setup.py build_ext --inplace
+
+gui: py_module
+	$(INSTALLER) -F onmovefreely.py
