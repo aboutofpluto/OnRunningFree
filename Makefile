@@ -17,16 +17,17 @@ SWIG_OUT = $(SWIG_C) omx2gpx.py
 INSTALLER = pyinstaller
 INSTALLER_OUT = build dist onmovefreely.spec
 
-all: $(TARGET)
-
 $(TARGET): $(OBJECTS)
 	$(LINKER) $(CFLAGS) -o $@ $^ $(LIBS) 
+
+all: $(TARGET) gui
 
 .cc.o:
 	$(CC) $(CFLAGS) -o $< 
 
 clean:
-	rm -f $(OBJECTS)
+	rm -f $(TARGET)
+	rm -f $(OBJECTS) 
 	rm -f $(SWIG_OUT)
 	rm -rf $(INSTALLER_OUT)
 
