@@ -1,43 +1,59 @@
 # Makefile
 
+# targets
 CMD = omx2gpx
-OBJECTS = main.o commandline.o load.o point.o elevation.o core_header.o core_data.o pywrap.o
+GUI = onmovefreely
+
+# directories
+DIST_DIR = dist
+C_SRC_DIR = src/c
+PY_SRC_DIR = src/python
+MKDIR = mkdir
+
+# c/gcc config
+SRCS = main.c commandline.c load.c point.c elevation.c core_header.c core_data.c pywrap.c
+OBJECTS = $(addprefix $(C_SRC_DIR)/,$(SRCS:.c=.o))
 
 CFLAGS = -O3 -Wall -L/usr/lib -L. -s -DNDEBUG 
 LIBS = 
 
 CC = gcc
 LINKER = gcc
+
+# python/swig/pyinstall config
 PYTHON = python3
 
 SWIG = swig
-SWIG_C = _$(CMD).c
-SWIG_I = $(CMD).i
-SWIG_OUT = $(SWIG_C)* $(CMD).py
+SWIG_C = $(addprefix $(C_SRC_DIR)/,_$(CMD).c)
+SWIG_I = $(addprefix $(C_SRC_DIR)/,$(CMD).i)
+SWIG_PY = $(addprefix $(C_SRC_DIR)/,$(CMD).py)
+SWIG_CLEAN = $(SWIG_C)* $(SWIG_PY)
 
 INSTALLER = pyinstaller
-GUI = onmovefreely
-INSTALLER_OUT = build $(GUI).spec
+INSTALLER_CLEAN = build $(GUI).spec
 
+# defaut rule is omx2gpx
 $(CMD): $(OBJECTS)
-	$(LINKER) $(CFLAGS) -o $@ $^ $(LIBS) 
+	$(MKDIR) -p $(DIST_DIR)
+	$(LINKER) $(CFLAGS) -o $(addprefix $(DIST_DIR)/,$@) $^ $(LIBS) 
 
+# rule for GUI onmovefreely using pyinstaller
 $(GUI): py_module
-	$(INSTALLER) -F $(GUI).py
+	$(INSTALLER) -F $(addprefix $(PY_SRC_DIR)/,$(GUI).py)
 
+# all build all binaries
 all: $(CMD) $(GUI)
 
-.cc.o:
-	$(CC) $(CFLAGS) -o $< 
-
+# build py module using swig and python setup.py
 py_module:
 	$(SWIG) -python -o $(SWIG_C) $(SWIG_I)
-	$(PYTHON) setup.py build_ext --inplace
+	$(PYTHON) $(addprefix $(C_SRC_DIR)/,setup.py) build_ext
+	cp $(SWIG_PY) $(SWIG_C)*so $(PY_SRC_DIR)
 
+# clean all temporary files
 clean:
-	rm -f $(CMD)
 	rm -f $(OBJECTS) 
-	rm -f $(SWIG_OUT)
-	rm -rf $(INSTALLER_OUT)
+	rm -f $(SWIG_CLEAN)
+	rm -rf $(INSTALLER_CLEAN)
 	rm -rf __pycache__/
 
