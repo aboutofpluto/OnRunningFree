@@ -15,7 +15,7 @@ On RunningFree is a GUI built on omx2gpx using python, swig and pyinstaller.
 
 ## Installation
 
-Some binary of OnRunning have already been compiled. Give them a try, you can find them in the `bin` directory.
+Some binary of OnRunningFree have already been compiled. Give them a try, you can find them in the `bin` directory.
 
 ## Requirements and manual installation
 
