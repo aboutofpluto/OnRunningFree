@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Name=OnMoveFreely (GUI)
+GenericName=OMX to GPX Converter
+Comment=OnMoveFreely can convert a bunch of OMD/OMH files to gpx
+MimeType=application/x-shellscript;
+TryExec=/usr/local/bin/onmovefreely
+Exec=/usr/local/bin/onmovefreely
+Icon=/usr/share/icons/hicolor/scalable/apps/onmovefreely.png
+Type=Application
+Terminal=false
+Categories=Utility;
+StartupWMClass=OnMoveFreely
+Keywords=Converter;OMD/OMH;GPX;
