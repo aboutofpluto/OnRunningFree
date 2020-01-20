@@ -46,7 +46,7 @@ def get_omx_infos_in_dir(directory):
 def export_btn_handler():    
     input_dir = w.InputDirEntry.get()
     output_dir = w.OutputDirEntry.get()
-    l = w.Listbox1
+    l = w.RecordList
     
     if len(input_dir) == 0:
         messagebox.showinfo("OnMoveFreely", "Please select an input directory")
@@ -57,13 +57,17 @@ def export_btn_handler():
     else:
         output = []
         for index in l.curselection():
-            output.append(
-                omx2gpx.pywrap(l.get(index).split()[0],
-                               input_dir + "/",
-                               output_dir + "/")
-            )
-
-        print("\n".join(output))
+            result = omx2gpx.convert(l.get(index).split()[0],
+                                     input_dir + "/",
+                                     output_dir + "/")
+            if "ERROR CODE: 0\n" in result:
+                l.itemconfig(index, {'bg': "#00FF00"})
+            else:
+                l.itemconfig(index, {'bg': "#FF0000"})
+            output.append(result)
+        # So that colored bg are visible
+        l.selection_clear(0, tk.END)
+#        print("\n".join(output))
 
 # handler for 'Select input directory' button
 # 1. Open directory
@@ -72,7 +76,7 @@ def input_btn_handler():
     d = filedialog.askdirectory()
 
     e = w.InputDirEntry
-    l = w.Listbox1
+    l = w.RecordList
 
     e.configure(state='normal')
     e.delete(0, tk.END)

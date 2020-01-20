@@ -45,7 +45,6 @@ int wrap(char *pFilename, char *pInputDir, char *pOutputDir) {
   }
 
   // Load data file (OMD).
-  printf("Load data\n");
   return Load_Data(pFnData, pFnGpx, pHeader);
 }
 
@@ -76,10 +75,11 @@ char *timestamp(char *filename) {
   return buffer;
 }
 
-char *pywrap(char *filename, char *inputdir, char *outputdir) {
+char *convert(char *filename, char *inputdir, char *outputdir) {
   int out_pipe[2];
   int saved_stdout;
-
+  char errorValue[32] = {0};
+	
   memset(&gOptions, 0, sizeof(struct SOptions));
   gOptions.nOptions = e_OPT_DefaultOptions;
 
@@ -90,19 +90,21 @@ char *pywrap(char *filename, char *inputdir, char *outputdir) {
 
   dup2(out_pipe[1], STDOUT_FILENO);
   close(out_pipe[1]);
+
+  sprintf(errorValue, "\nERROR CODE: %d\n", wrap(filename, inputdir, outputdir));
   
-  wrap(filename, inputdir, outputdir);
   fflush(stdout);
 
   // Non-blocking fd
   int flags = fcntl(out_pipe[0], F_GETFL, 0);
   fcntl(out_pipe[0], F_SETFL, flags | O_NONBLOCK);
   
-  if (read(out_pipe[0], buffer, MAX_LEN) < 3) {
+  if (read(out_pipe[0], buffer, MAX_LEN - 40) < 3) {
 	strcpy(buffer, "No output from omx2gpx");
   }
 
   dup2(saved_stdout, STDOUT_FILENO);
 
+  strcat(buffer, errorValue);
   return buffer;
 }
