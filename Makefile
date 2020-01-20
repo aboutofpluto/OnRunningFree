@@ -27,7 +27,7 @@ SWIG = swig
 SWIG_C = $(addprefix $(C_SRC_DIR)/,_$(CMD).c)
 SWIG_I = $(addprefix $(C_SRC_DIR)/,$(CMD).i)
 SWIG_PY = $(addprefix $(C_SRC_DIR)/,$(CMD).py)
-SWIG_CLEAN = $(SWIG_C)* $(SWIG_PY)
+SWIG_CLEAN = $(SWIG_C) $(SWIG_C)*so $(SWIG_PY) $(addprefix $(PY_SRC_DIR)/,_$(CMD).c*so) $(addprefix $(PY_SRC_DIR)/,_$(CMD).py) 
 
 INSTALLER = pyinstaller
 INSTALLER_CLEAN = build $(GUI).spec
@@ -47,7 +47,7 @@ all: $(CMD) $(GUI)
 # build py module using swig and python setup.py
 py_module:
 	$(SWIG) -python -o $(SWIG_C) $(SWIG_I)
-	$(PYTHON) $(addprefix $(C_SRC_DIR)/,setup.py) build_ext
+	$(PYTHON) $(addprefix $(C_SRC_DIR)/,setup.py) build_ext --inplace
 	cp $(SWIG_PY) $(SWIG_C)*so $(PY_SRC_DIR)
 
 # clean all temporary files
@@ -57,3 +57,7 @@ clean:
 	rm -rf $(INSTALLER_CLEAN)
 	rm -rf __pycache__/
 
+# install (as root on linux)
+install:
+	cp $(DIST_DIR)/$(CMD) /usr/local/bin
+	cp $(DIST_DIR)/$(GUI) /usr/local/bin
