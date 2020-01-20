@@ -19,14 +19,14 @@ except ImportError:
     import tkinter.ttk as ttk
     py3 = True
 
-import onmovefreely_support
+import onrunningfree_support
 
 def vp_start_gui():
     '''Starting point when module is the main routine.'''
     global val, w, root
     root = tk.Tk()
     top = Toplevel1 (root)
-    onmovefreely_support.init(root, top)
+    onrunningfree_support.init(root, top)
     root.mainloop()
 
 w = None
@@ -36,7 +36,7 @@ def create_Toplevel1(root, *args, **kwargs):
     rt = root
     w = tk.Toplevel (root)
     top = Toplevel1 (w)
-    onmovefreely_support.init(w, top, *args, **kwargs)
+    onrunningfree_support.init(w, top, *args, **kwargs)
     return (w, top)
 
 def destroy_Toplevel1():
@@ -70,21 +70,21 @@ class Toplevel1:
         top.minsize(1, 1)
         top.maxsize(1905, 1170)
         top.resizable(1, 1)
-        top.title("OnMoveFreely")
+        top.title("OnRunningFree")
         top.configure(highlightcolor="black")
 
         self.InputDirBtn = tk.Button(top)
         self.InputDirBtn.place(relx=0.019, rely=0.067, height=33, width=200)
-        self.InputDirBtn.configure(command=onmovefreely_support.input_btn_handler)
+        self.InputDirBtn.configure(command=onrunningfree_support.input_btn_handler)
         self.InputDirBtn.configure(disabledforeground="#b8a786")
         self.InputDirBtn.configure(font="-family {DejaVu Sans} -size 12")
         self.InputDirBtn.configure(text='''Select input directory''')
-        self.InputDirBtn.bind('<Button-2>',lambda e:onmovefreely_support.button_handler2(e,2))
-        self.InputDirBtn.bind('<Button-3>',lambda e:onmovefreely_support.button_handler2(e,3))
+        self.InputDirBtn.bind('<Button-2>',lambda e:onrunningfree_support.button_handler2(e,2))
+        self.InputDirBtn.bind('<Button-3>',lambda e:onrunningfree_support.button_handler2(e,3))
 
         self.QuitButton = tk.Button(top)
         self.QuitButton.place(relx=0.868, rely=0.65, height=33, width=61)
-        self.QuitButton.configure(command=onmovefreely_support.quit)
+        self.QuitButton.configure(command=onrunningfree_support.quit)
         self.QuitButton.configure(disabledforeground="#b8a786")
         self.QuitButton.configure(font="-family {DejaVu Sans} -size 12")
         self.QuitButton.configure(text='''Quit''')
@@ -92,12 +92,12 @@ class Toplevel1:
         self.OutputDirBtn = tk.Button(top)
         self.OutputDirBtn.place(relx=0.019, rely=0.15, height=33, width=200)
         self.OutputDirBtn.configure(activebackground="#f9f9f9")
-        self.OutputDirBtn.configure(command=onmovefreely_support.output_btn_handler)
+        self.OutputDirBtn.configure(command=onrunningfree_support.output_btn_handler)
         self.OutputDirBtn.configure(disabledforeground="#b8a786")
         self.OutputDirBtn.configure(font="-family {DejaVu Sans} -size 12")
         self.OutputDirBtn.configure(text='''Select output directory''')
-        self.OutputDirBtn.bind('<Button-2>',lambda e:onmovefreely_support.button_handler2(e,2))
-        self.OutputDirBtn.bind('<Button-3>',lambda e:onmovefreely_support.button_handler2(e,3))
+        self.OutputDirBtn.bind('<Button-2>',lambda e:onrunningfree_support.button_handler2(e,2))
+        self.OutputDirBtn.bind('<Button-3>',lambda e:onrunningfree_support.button_handler2(e,3))
 
         self.RecordList = tk.Listbox(top)
         self.RecordList.place(relx=0.019, rely=0.3, relheight=0.333
@@ -116,12 +116,12 @@ class Toplevel1:
         self.ExportBtn = tk.Button(top)
         self.ExportBtn.place(relx=0.019, rely=0.65, height=33, width=200)
         self.ExportBtn.configure(activebackground="#f9f9f9")
-        self.ExportBtn.configure(command=onmovefreely_support.export_btn_handler)
+        self.ExportBtn.configure(command=onrunningfree_support.export_btn_handler)
         self.ExportBtn.configure(disabledforeground="#b8a786")
         self.ExportBtn.configure(font="-family {DejaVu Sans} -size 12")
         self.ExportBtn.configure(text='''Export selected to gpx''')
-        self.ExportBtn.bind('<Button-2>',lambda e:onmovefreely_support.button_handler2(e,2))
-        self.ExportBtn.bind('<Button-3>',lambda e:onmovefreely_support.button_handler2(e,3))
+        self.ExportBtn.bind('<Button-2>',lambda e:onrunningfree_support.button_handler2(e,2))
+        self.ExportBtn.bind('<Button-3>',lambda e:onrunningfree_support.button_handler2(e,3))
 
         self.Label1 = tk.Label(top)
         self.Label1.place(relx=0.019, rely=0.017, height=23, width=111)
@@ -159,7 +159,7 @@ class Toplevel1:
         self.Label4 = tk.Label(top)
         self.Label4.place(relx=0.642, rely=0.9, height=30, width=176)
         self.Label4.configure(font=font11)
-        self.Label4.configure(text='''OnMoveFreely''')
+        self.Label4.configure(text='''OnRunningFree''')
 
 if __name__ == '__main__':
     vp_start_gui()

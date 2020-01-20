@@ -49,11 +49,11 @@ def export_btn_handler():
     l = w.RecordList
     
     if len(input_dir) == 0:
-        messagebox.showinfo("OnMoveFreely", "Please select an input directory")
+        messagebox.showinfo("OnRunningFree", "Please select an input directory")
     elif len(output_dir) == 0:
-        messagebox.showinfo("OnMoveFreely", "Please select an output directory")
+        messagebox.showinfo("OnRunningFree", "Please select an output directory")
     elif len(l.curselection()) == 0:
-            messagebox.showinfo("OnMoveFreely", "Please select at least one record to export")
+            messagebox.showinfo("OnRunningFree", "Please select at least one record to export")
     else:
         output = []
         for index in l.curselection():
@@ -84,7 +84,7 @@ def input_btn_handler():
 
     infos = get_omx_infos_in_dir(d)
     if len(infos) == 0:
-        messagebox.showinfo("OnMoveFreely", "No OMx files in selected directory")
+        messagebox.showinfo("OnRunningFree", "No OMx files in selected directory")
     else:
         e.insert(0, d)
         l.insert(0, *infos)
@@ -121,8 +121,8 @@ def destroy_window():
     top_level = None
 
 if __name__ == '__main__':
-    import onmovefreely
-    onmovefreely.vp_start_gui()
+    import onrunningfree
+    onrunningfree.vp_start_gui()
 
 
 

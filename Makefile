@@ -2,7 +2,7 @@
 
 # targets
 CMD = omx2gpx
-GUI = onmovefreely
+GUI = onrunningfree
 
 # directories
 DIST_DIR = dist/
@@ -55,7 +55,7 @@ $(CMD): $(OBJECTS)
 	$(MKDIR) -p $(DIST_DIR)
 	$(LINKER) $(CFLAGS) -o $(addprefix $(DIST_DIR),$@) $^ $(LIBS) 
 
-# rule for GUI onmovefreely using pyinstaller
+# rule for GUI OnRunningFree using pyinstaller
 $(GUI): py_module
 	$(BUILDER) $(BUILDER_OPTIONS) -w -F $(addprefix $(PY_SRC_DIR),$(GUI).py)
 
