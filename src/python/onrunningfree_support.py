@@ -10,7 +10,7 @@ import sys, os, glob
 import omx2gpx
 from tkinter import filedialog, messagebox, PhotoImage
 # base64 encoded images
-from images import OUT_OF_JAIL
+from images import PICTURE, LOGO
 
 try:
     import Tkinter as tk
@@ -109,11 +109,16 @@ def init(top, gui, *args, **kwargs):
     top_level = top
     root = top
 
-    render = PhotoImage(data=OUT_OF_JAIL)
-    label = w.Label3
+    render = PhotoImage(data=LOGO)
+    label = w.Logo
     label.configure(image=render)
     label.image = render
-    
+
+    render = PhotoImage(data=PICTURE)
+    label = w.Picture
+    label.configure(image=render)
+    label.image = render
+
 def destroy_window():
     # Function which closes the window.
     global top_level
