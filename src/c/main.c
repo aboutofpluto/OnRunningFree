@@ -28,6 +28,7 @@
 #include "ctypes.h"
 #include "format.h"
 #include "main.h"
+#include "commandline.h"
 #include "load.h"
 #include "core_header.h"
 #include "core_data.h"

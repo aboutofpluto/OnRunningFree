@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Name=OnRunningFree (GUI)
+GenericName=OMX to GPX Converter
+Comment=OnRunningFree can convert a bunch of OMD/OMH files to gpx
+MimeType=application/x-shellscript;
+TryExec=/usr/local/bin/onrunningfree
+Exec=/usr/local/bin/onrunningfree
+Icon=/usr/share/icons/hicolor/scalable/apps/onrunningfree.png
+Type=Application
+Terminal=false
+Categories=Utility;
+StartupWMClass=OnRunningFree
+Keywords=Converter;OMD/OMH;GPX;
