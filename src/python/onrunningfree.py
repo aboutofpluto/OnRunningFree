@@ -68,7 +68,7 @@ class Toplevel1:
         top.minsize(1, 1)
         top.maxsize(1905, 1170)
         top.resizable(1, 1)
-        top.title("OnMoveFreely")
+        top.title("OnRunningFree")
         top.configure(highlightcolor="black")
 
         self.InputDirBtn = tk.Button(top)
