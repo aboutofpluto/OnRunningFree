@@ -76,34 +76,34 @@ char *timestamp(char *filename) {
 }
 
 char *convert(char *filename, char *inputdir, char *outputdir) {
-  int out_pipe[2];
-  int saved_stdout;
+  /* int out_pipe[2]; */
+  /* int saved_stdout; */
   char errorValue[32] = {0};
 	
   memset(&gOptions, 0, sizeof(struct SOptions));
   gOptions.nOptions = e_OPT_DefaultOptions;
 
-  saved_stdout = dup(STDOUT_FILENO);
-  if( pipe(out_pipe) != 0 ) {
-    exit(1);
-  }
+  /* saved_stdout = dup(STDOUT_FILENO); */
+  /* if( pipe(out_pipe) != 0 ) { */
+  /*   exit(1); */
+  /* } */
 
-  dup2(out_pipe[1], STDOUT_FILENO);
-  close(out_pipe[1]);
+  /* dup2(out_pipe[1], STDOUT_FILENO); */
+  /* close(out_pipe[1]); */
 
   sprintf(errorValue, "\nERROR CODE: %d\n", wrap(filename, inputdir, outputdir));
   
   fflush(stdout);
 
   // Non-blocking fd
-  int flags = fcntl(out_pipe[0], F_GETFL, 0);
-  fcntl(out_pipe[0], F_SETFL, flags | O_NONBLOCK);
+  /* int flags = fcntl(out_pipe[0], F_GETFL, 0); */
+  /* fcntl(out_pipe[0], F_SETFL, flags | O_NONBLOCK); */
   
-  if (read(out_pipe[0], buffer, MAX_LEN - 40) < 3) {
-	strcpy(buffer, "No output from omx2gpx");
-  }
+  /* if (read(out_pipe[0], buffer, MAX_LEN - 100) < 3) { */
+  /* 	strcpy(buffer, "No output from omx2gpx"); */
+  /* } */
 
-  dup2(saved_stdout, STDOUT_FILENO);
+  /* dup2(saved_stdout, STDOUT_FILENO); */
 
   strcat(buffer, errorValue);
   return buffer;
