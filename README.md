@@ -26,7 +26,7 @@ Some binary of OnRunningFree have already been compiled. Give them a try, you ca
 
 In brief:
 
-      $ sudo apt-get install swig
+      $ sudo apt-get install swig libfontconfig-dev
    	  $ pip install pyinstaller
    	  $ make all
 
@@ -40,7 +40,7 @@ Command-line:
 
 GUI:
 
-	$ OnRunningFree
+	$ onrunningfree
 	
 
 ## Further references
