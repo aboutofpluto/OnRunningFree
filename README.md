@@ -19,16 +19,17 @@ Some binary of OnRunningFree have already been compiled. Give them a try, you ca
 
 ## Requirements and manual installation
 
-- python 3
+- a C compiler (gcc)
+- python >= 3.9 
 - swig
 - pyinstaller
 - GNU Make
 
-In brief:
+In brief (Linux):
 
       $ sudo apt-get install swig libfontconfig-dev
-   	  $ pip install pyinstaller
-   	  $ make all
+      $ pip install pyinstaller
+      $ make all
 
 This should create two binaries in `dist` sub-directory. You can run `sudo make install` to finish the process
 
